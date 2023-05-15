@@ -88,6 +88,7 @@
 					<option value="rl" {{if eq .Template.Tpltype "rl"}}selected="selected"{{end}}>百度Hi(如流)</option>
 					<option value="voice" {{if eq .Template.Tpltype "voice"}}selected="selected"{{end}}>语音播报</option>
 					<option value="fsapp" {{if eq .Template.Tpltype "fsapp"}}selected="selected"{{end}}>飞书机器人应用</option>
+					<option value="bark" {{if eq .Template.Tpltype "bark"}}selected="selected"{{end}}>Bark</option>
 					</select>
                     {{if eq .Template.Tpltype "webhook"}}
                     <label>请求的content-type</label>
@@ -251,6 +252,12 @@ function typeChange(){
 	document.getElementById("Pat").style.display="none";
 	document.getElementById("Party").style.display="none";
 	document.getElementById("Tag").style.display="none";
+ }else if(typeSelect=="bark"){
+	typeStr.innerText="";
+	document.getElementById("Purl").style.display="none";
+	document.getElementById("Pat").style.display="none";
+	document.getElementById("Party").style.display="none";
+	document.getElementById("Tag").style.display="none";
  } else if(typeSelect=="email"){
 	typeStr.innerText="邮箱(多个请以,隔开)";
 	document.getElementById("Purl").style.display="";
@@ -329,6 +336,8 @@ function sendtest(){
 	   sendurl='{{ urlfor "PrometheusAlertController.PrometheusAlert"}}?type='+utype.value+'&tpl='+uname.value+'&at='+upat.value;
 	} else if(utype.value=="webhook"){
 	   sendurl='{{ urlfor "PrometheusAlertController.PrometheusAlert"}}?type='+utype.value+'&tpl='+uname.value+'&webhookurl='+upurl.value+'&webhookContentType='+ucontentType.value;
+	} else if(utype.value=="bark"){
+	   sendurl='{{ urlfor "PrometheusAlertController.PrometheusAlert"}}?type='+utype.value+'&tpl='+uname.value;
 	} else if(utype.value=="email"){
 	   sendurl='{{ urlfor "PrometheusAlertController.PrometheusAlert"}}?type='+utype.value+'&tpl='+uname.value+'&email='+upurl.value;
 	} else if(utype.value=="rl"){
