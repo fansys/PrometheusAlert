@@ -73,6 +73,7 @@ type PrometheusAlertMsg struct {
 	AtSomeOne          string
 	RoundRobin         string
 	Split              string
+	Title              string
 	WebhookContentType string
 }
 
@@ -154,6 +155,7 @@ func (c *PrometheusAlertController) PrometheusAlert() {
 	pMsg.RoundRobin = c.Input().Get("rr")
 	//该配置仅适用于alertmanager的消息,用于判断是否需要拆分alertmanager告警消息
 	pMsg.Split = c.Input().Get("split")
+	pMsg.Title = c.Input().Get("title")
 	//模版加载进内存处理,防止告警过多频繁查库
 	var PrometheusAlertTpl *models.PrometheusAlertDB
 	if GlobalPrometheusAlertTpl == nil {
@@ -222,7 +224,7 @@ func (c *PrometheusAlertController) PrometheusAlert() {
 	c.ServeJSON()
 }
 
-//路由处理
+// 路由处理
 func AlertRouterSet(xalert map[string]interface{}, PMsg PrometheusAlertMsg, Tpl string) []PrometheusAlertMsg {
 	return_Msgs := []PrometheusAlertMsg{}
 	//原有的参数不变
@@ -308,7 +310,7 @@ func AlertRouterSet(xalert map[string]interface{}, PMsg PrometheusAlertMsg, Tpl 
 	return return_Msgs
 }
 
-//处理告警记录
+// 处理告警记录
 func SetRecord(AlertValue interface{}) {
 	var Alertname, Status, Level, Labels, Instance, Summary, Description, StartAt, EndAt string
 	xalert := AlertValue.(map[string]interface{})
@@ -382,7 +384,7 @@ func SetRecord(AlertValue interface{}) {
 	}
 }
 
-//消息模版化
+// 消息模版化
 func TransformAlertMessage(p_json interface{}, tpltext string) (error error, msg string) {
 	funcMap := template.FuncMap{
 		"GetCSTtime": GetCSTtime,
@@ -430,7 +432,7 @@ func TransformAlertMessage(p_json interface{}, tpltext string) (error error, msg
 	return nil, buf.String()
 }
 
-//发送消息
+// 发送消息
 func SendMessagePrometheusAlert(message string, pmsg *PrometheusAlertMsg, logsign string) string {
 	Title := beego.AppConfig.String("title")
 	var ReturnMsg string
@@ -522,7 +524,7 @@ func SendMessagePrometheusAlert(message string, pmsg *PrometheusAlertMsg, logsig
 		ReturnMsg += PostToRuLiu(pmsg.GroupId, message, beego.AppConfig.String("BDRL_URL"), logsign)
 	// Bark
 	case "bark":
-		ReturnMsg += SendBark(message, logsign)
+		ReturnMsg += SendBark(pmsg.Title, message, pmsg.AtSomeOne, logsign)
 	// Bark
 	case "voice":
 		ReturnMsg += SendVoice(message, logsign)

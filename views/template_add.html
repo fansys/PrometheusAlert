@@ -148,7 +148,7 @@
 				  <!-- text input -->
 				  <div class="form-group">
 					<label id="typestr">@某人</label>
-					<input type="text" id="pat" class="form-control" name="pat" value=""  placeholder="钉钉@使用的是手机号码，企业微信机器人@使用的是用户帐号，飞书V2 @使用的是用户Email邮箱">
+					<input type="text" id="pat" class="form-control" name="pat" value=""  placeholder="钉钉@使用的是手机号码，企业微信机器人@使用的是用户帐号，飞书V2 @使用的是用户Email邮箱，Bark @使用的是apiKey">
 				  </div>
 				</div>
 
@@ -255,9 +255,9 @@ function typeChange(){
     document.getElementById("contentTypeLabel").style.display="";
     document.getElementById("contentType").style.display="";
  } else if(typeSelect=="bark"){
-	typeStr.innerText="";
-	document.getElementById("Purl").style.display="none";
-	document.getElementById("Pat").style.display="none";
+	typeStr.innerText="通知标题";
+	document.getElementById("Purl").style.display="";
+	document.getElementById("Pat").style.display="";
 	document.getElementById("Party").style.display="none";
 	document.getElementById("Tag").style.display="none";
     document.getElementById("contentTypeLabel").style.display="none";

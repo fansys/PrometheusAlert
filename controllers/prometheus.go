@@ -69,8 +69,8 @@ func (a AlerMessages) Less(i, j int) bool { // 重写 Less() 方法， 从大到
 	return a[j].Labels.Level < a[i].Labels.Level
 }
 
-//for prometheus alert
-//关于告警级别level共有5个级别,0-4,0 信息,1 警告,2 一般严重,3 严重,4 灾难
+// for prometheus alert
+// 关于告警级别level共有5个级别,0-4,0 信息,1 警告,2 一般严重,3 严重,4 灾难
 func (c *PrometheusController) PrometheusAlert() {
 	alert := Prometheus{}
 	logsign := "[" + LogsSign() + "]"
@@ -327,7 +327,7 @@ func SendMessageR(message Prometheus, rwxurl, rddurl, rfsurl, rphone, remail, rg
 		// 发送消息到Telegram
 		SendTG(PhoneCallMessage, logsign)
 		// 发送消息到Bark
-		SendBark(PhoneCallMessage, logsign)
+		SendBark("", PhoneCallMessage, "", logsign)
 		SendVoice(PhoneCallMessage, logsign)
 		// 推送消息到企业微信
 		SendWorkWechat(beego.AppConfig.String("WorkWechat_ToUser"), beego.AppConfig.String("WorkWechat_ToParty"), beego.AppConfig.String("WorkWechat_ToTag"), wxtext, logsign)

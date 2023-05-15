@@ -77,7 +77,7 @@ func (c *MainController) AlertTest() {
 		c.Data["json"] = ret
 	case "bark":
 		TgMessage := "PrometheusAlertCenter测试告警"
-		ret := SendBark(TgMessage, logsign)
+		ret := SendBark("", TgMessage, "", logsign)
 		c.Data["json"] = ret
 	case "voice":
 		vMessage := "Prometheus Alert Center 测试告警"
@@ -93,7 +93,7 @@ func (c *MainController) AlertTest() {
 	c.ServeJSON()
 }
 
-//markdown test
+// markdown test
 func (c *MainController) MarkdownTest() {
 	if !CheckAccount(c.Ctx) {
 		c.Redirect("/login", 302)
@@ -123,7 +123,7 @@ func (c *MainController) MarkdownTest() {
 
 }
 
-//test page
+// test page
 func (c *MainController) Test() {
 	if !CheckAccount(c.Ctx) {
 		c.Redirect("/login", 302)

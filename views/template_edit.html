@@ -148,7 +148,7 @@
 				<div id="Purl" class="col-sm-6">
 				  <!-- text input -->
 				  <div class="form-group">
-					<label id="typestr">{{if eq .Template.Tpltype "dd"}}钉钉机器人地址{{else}}{{if eq .Template.Tpltype "wx"}}微信机器人地址{{else}}{{if eq .Template.Tpltype "fs"}}飞书机器人地址{{else}}{{if eq .Template.Tpltype "webhook"}}WebHook地址{{else}}{{if eq .Template.Tpltype "email"}}邮箱(多个请以,隔开){{else}}{{if eq .Template.Tpltype "rl"}}百度Hi(如流)群id{{else}}{{if eq .Template.Tpltype "workwechat"}}接受用户{{else}}{{if eq .Template.Tpltype "fsapp"}}飞书 用户open_id、user_id、union_ids、部门open_department_id{{else}}手机号{{end}}{{end}}{{end}}{{end}}{{end}}{{end}}{{end}}{{end}}</label>
+					<label id="typestr">{{if eq .Template.Tpltype "dd"}}钉钉机器人地址{{else}}{{if eq .Template.Tpltype "wx"}}微信机器人地址{{else}}{{if eq .Template.Tpltype "fs"}}飞书机器人地址{{else}}{{if eq .Template.Tpltype "webhook"}}WebHook地址{{else}}{{if eq .Template.Tpltype "bark"}}通知标题{{else}}{{if eq .Template.Tpltype "email"}}邮箱(多个请以,隔开){{else}}{{if eq .Template.Tpltype "rl"}}百度Hi(如流)群id{{else}}{{if eq .Template.Tpltype "workwechat"}}接受用户{{else}}{{if eq .Template.Tpltype "fsapp"}}飞书 用户open_id、user_id、union_ids、部门open_department_id{{else}}手机号{{end}}{{end}}{{end}}{{end}}{{end}}{{end}}{{end}}{{end}}{{end}}</label>
 					<input type="text" id="purl" class="form-control" name="purl" value="">
 				  </div>
 				</div>
@@ -253,9 +253,9 @@ function typeChange(){
 	document.getElementById("Party").style.display="none";
 	document.getElementById("Tag").style.display="none";
  }else if(typeSelect=="bark"){
-	typeStr.innerText="";
-	document.getElementById("Purl").style.display="none";
-	document.getElementById("Pat").style.display="none";
+	typeStr.innerText="通知标题";
+	document.getElementById("Purl").style.display="";
+	document.getElementById("Pat").style.display="";
 	document.getElementById("Party").style.display="none";
 	document.getElementById("Tag").style.display="none";
  } else if(typeSelect=="email"){

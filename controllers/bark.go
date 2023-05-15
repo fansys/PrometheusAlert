@@ -15,17 +15,20 @@ import (
 )
 
 // SendBark 发送消息至iPhone
-func SendBark(msg, logsign string) string {
+func SendBark(title, msg, AtSomeOne, logsign string) string {
 	open := beego.AppConfig.String("open-bark")
 	if open != "1" {
 		logs.Info(logsign, "[bark]", "bark未配置未开启状态,请先配置open-bark为1")
 		return "bark未配置未开启状态,请先配置open-bark为1"
 	}
 	senduser := beego.AppConfig.String("BARK_KEYS")
+	if len(AtSomeOne) > 0 {
+		senduser = AtSomeOne
+	}
 	sendusers := strings.Split(senduser, "-")
 	for _, u := range sendusers {
 		// 处理发送消息
-		urlprefix := generateGetUrlPrefix(msg, u)
+		urlprefix := generateGetUrlPrefix(title, msg, u)
 		barkcopy := beego.AppConfig.String("BARK_COPY")
 		if barkcopy == "1" {
 			urlprefix += fmt.Sprintf("?copy=%s", msg)
@@ -84,9 +87,12 @@ func sendBark(url string) (responseMessage, error) {
 	return message, nil
 }
 
-func generateGetUrlPrefix(msg, userkey string) string {
+func generateGetUrlPrefix(title, msg, userkey string) string {
 	barkserver := beego.AppConfig.String("BARK_URL")
 	barktitle := beego.AppConfig.String("BARK_TITLE")
+	if len(title) > 0 {
+		barktitle = title
+	}
 	if len(barktitle) == 0 {
 		barktitle = "Bark推送测试"
 	}
