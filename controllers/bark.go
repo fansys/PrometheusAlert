@@ -14,6 +14,22 @@ import (
 	"github.com/astaxie/beego/logs"
 )
 
+type BarkMessage struct {
+	Title             string `json:"title"`             // Notification title (font size would be larger than the body)
+	Body              string `json:"body"`              // Notification content
+	Category          string `json:"category"`          // Reserved field, no use yet
+	DeviceKey         string `json:"device_key"`        // The key for each device
+	Level             string `json:"level"`             // 	'active', 'timeSensitive', or 'passive'
+	Badge             int    `json:"badge"`             // The number displayed next to App icon (Apple Developer)
+	AutomaticallyCopy string `json:"automaticallyCopy"` // 	Must be 1
+	Copy              string `json:"copy"`              // The value to be copied
+	Sound             string `json:"sound"`             // Value from here
+	Icon              string `json:"icon"`              // An url to the icon, available only on iOS 15 or later
+	Group             string `json:"group"`             // The group of the notification
+	IsArchive         string `json:"isArchive"`         // Value must be 1. Whether or not should be archived by the app
+	Url               string `json:"url"`               //  that will jump when click notification
+}
+
 // SendBark 发送消息至iPhone
 func SendBark(title, msg, AtSomeOne, logsign string) string {
 	open := beego.AppConfig.String("open-bark")
@@ -21,25 +37,39 @@ func SendBark(title, msg, AtSomeOne, logsign string) string {
 		logs.Info(logsign, "[bark]", "bark未配置未开启状态,请先配置open-bark为1")
 		return "bark未配置未开启状态,请先配置open-bark为1"
 	}
-	senduser := beego.AppConfig.String("BARK_KEYS")
-	if len(AtSomeOne) > 0 {
-		senduser = AtSomeOne
+	barkServer := beego.AppConfig.String("BARK_URL")
+	if barkServer == "" {
+		barkServer = "https://api.day.app/push"
 	}
-	sendusers := strings.Split(senduser, "-")
-	for _, u := range sendusers {
+	sendUser := beego.AppConfig.String("BARK_KEYS")
+	if len(AtSomeOne) > 0 {
+		sendUser = AtSomeOne
+	}
+	barkTitle := beego.AppConfig.String("BARK_TITLE")
+	if len(title) > 0 {
+		barkTitle = title
+	}
+	if len(barkTitle) == 0 {
+		barkTitle = "Bark推送测试"
+	}
+	barkCopy := beego.AppConfig.String("BARK_COPY")
+	barkArchive := beego.AppConfig.String("BARK_ARCHIVE")
+	barkGroup := beego.AppConfig.String("BARK_GROUP")
+	bm := BarkMessage{
+		Title:             barkTitle,
+		Body:              msg,
+		AutomaticallyCopy: barkCopy,
+		IsArchive:         barkArchive,
+		Group:             barkGroup,
+	}
+	sendUsers := strings.Split(sendUser, "-")
+	for _, u := range sendUsers {
 		// 处理发送消息
-		urlprefix := generateGetUrlPrefix(title, msg, u)
-		barkcopy := beego.AppConfig.String("BARK_COPY")
-		if barkcopy == "1" {
-			urlprefix += fmt.Sprintf("?copy=%s", msg)
-			urlprefix += "&automaticallyCopy=1"
-		}
-		barkarchive := beego.AppConfig.String("BARK_ARCHIVE")
-		if barkarchive == "1" {
-			urlprefix += "&isArchive=1"
-		}
-		urlprefix += fmt.Sprintf("&group=%s", beego.AppConfig.String("BARK_GROUP"))
-		get, err := sendBark(urlprefix)
+		bm.DeviceKey = u
+		b := new(bytes.Buffer)
+		json.NewEncoder(b).Encode(bm)
+		logs.Info(logsign, "[bark]", b)
+		get, err := sendBark(barkServer, *b)
 		if err != nil {
 			logs.Error(logsign, "[bark]", fmt.Errorf("send to %s, err: %v", u, err))
 		}
@@ -59,9 +89,9 @@ type responseMessage struct {
 	Message string `json:"message"`
 }
 
-func sendBark(url string) (responseMessage, error) {
+func sendBark(url string, body bytes.Buffer) (responseMessage, error) {
 	client := &http.Client{Timeout: 5 * time.Second}
-	resp, err := client.Get(url)
+	resp, err := client.Post(url, "application/json", &body)
 	if err != nil {
 		return responseMessage{}, err
 	}

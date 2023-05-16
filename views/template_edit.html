@@ -337,7 +337,7 @@ function sendtest(){
 	} else if(utype.value=="webhook"){
 	   sendurl='{{ urlfor "PrometheusAlertController.PrometheusAlert"}}?type='+utype.value+'&tpl='+uname.value+'&webhookurl='+upurl.value+'&webhookContentType='+ucontentType.value;
 	} else if(utype.value=="bark"){
-	   sendurl='{{ urlfor "PrometheusAlertController.PrometheusAlert"}}?type='+utype.value+'&tpl='+uname.value;
+	   sendurl='{{ urlfor "PrometheusAlertController.PrometheusAlert"}}?type='+utype.value+'&tpl='+uname.value+'&title='+upurl.value+'&at='+upat.value;
 	} else if(utype.value=="email"){
 	   sendurl='{{ urlfor "PrometheusAlertController.PrometheusAlert"}}?type='+utype.value+'&tpl='+uname.value+'&email='+upurl.value;
 	} else if(utype.value=="rl"){
